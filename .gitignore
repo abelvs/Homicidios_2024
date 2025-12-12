@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+/01_datos_brutos/*
+!/01_datos_brutos/.gitkeep
