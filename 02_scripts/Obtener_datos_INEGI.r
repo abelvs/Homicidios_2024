@@ -42,4 +42,11 @@ download.file(url_ageeml, zip_path_ageeml, mode = "wb")
 
 unzip(zip_path_ageeml, exdir = dest_dir)
 
+# Limpieza de archivos ZIP----
+file_delete(zip_path_def)
+file_delete(zip_path_ageeml)
+
+# Mensaje de confirmación
+cat("Archivos ZIP eliminados después de la extracción.\n")
+
 
