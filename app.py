@@ -127,7 +127,7 @@ def get_location_stats(df):
 # SIDEBAR - NAVEGACIÓN
 # ==============================================================================
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Coat_of_arms_of_Mexico.svg/1200px-Coat_of_arms_of_Mexico.svg.png", width=80)
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Coat_of_arms_of_Mexico_%28golden_linear%29.svg/960px-Coat_of_arms_of_Mexico_%28golden_linear%29.svg.png", width=80)
     
     st.markdown("---")
     st.title("🗂️ Navegación")
