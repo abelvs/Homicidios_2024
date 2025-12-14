@@ -11,6 +11,8 @@ Una aplicación web interactiva para el análisis, visualización y exploración
 - [Tecnologías Utilizadas](#tecnologías-utilizadas)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Requisitos del Sistema](#requisitos-del-sistema)
+- [Solución de Problemas](#solución-de-problemas)
+- [Contacto y Soporte](#contacto-y-soporte)
 
 ---
 
@@ -217,3 +219,352 @@ Los filtros se aplican a **TODA** la aplicación automáticamente.
    - Cubre todo el año 2024 por defecto
 
 **Ejemplo de filtrado:**
+```
+Selecciono: 
+- Entidades: Jalisco, Michoacán
+- Causa: Arma de fuego
+- Fechas: 1 Ene 2024 - 30 Jun 2024
+
+Resultado: Solo homicidios por arma de fuego 
+en esas entidades durante el primer semestre
+```
+
+### 💡 Consejos de Uso
+
+| Acción | Resultado |
+|--------|-----------|
+| Pasa cursor sobre gráficos | Muestra valores exactos |
+| Doble clic en leyenda | Aísla una categoría |
+| Botón 📷 en gráficos | Descarga como PNG |
+| Scroll en tabla | Explora más registros |
+| CSV descargado | Abre en Excel o Python |
+
+---
+
+## 🚀 Instalación y Configuración
+
+### Requisitos Previos
+
+- **Python 3.8 o superior**
+- **pip** (gestor de paquetes de Python)
+- **Git** (opcional, para clonar el repositorio)
+
+### Pasos de Instalación
+
+#### 1. Clonar o descargar el proyecto
+
+```bash
+# Opción 1: Clonar con Git
+git clone <tu-repositorio>
+cd Homicidios_2024
+
+# Opción 2: Descargar ZIP y extraer
+# Navega a la carpeta del proyecto
+cd Homicidios_2024
+```
+
+#### 2. Crear un entorno virtual (recomendado)
+
+```bash
+# En Windows
+python -m venv venv
+venv\Scripts\activate
+
+# En macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+#### 3. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+O instalar manualmente:
+
+```bash
+pip install streamlit==1.28.1 pandas==2.1.1 plotly==5.17.0 numpy==1.24.3
+```
+
+#### 4. Preparar datos
+
+Asegúrate de que el archivo `Homicidios_2024_clean.csv` está en:
+```
+Homicidios_2024/
+├── 03_output/
+│   └── Homicidios_2024_clean.csv
+├── app.py
+├── README.md
+└── requirements.txt
+```
+
+#### 5. Ejecutar la aplicación
+
+```bash
+streamlit run app.py
+```
+
+Verás un mensaje como:
+```
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.x.x:8501
+```
+
+Abre automáticamente en tu navegador o copia la URL.
+
+### Archivo requirements.txt
+
+Crea un archivo `requirements.txt` en la raíz del proyecto:
+
+```
+streamlit==1.28.1
+pandas==2.1.1
+plotly==5.17.0
+numpy==1.24.3
+```
+
+---
+
+## 💻 Tecnologías Utilizadas
+
+### Stack Tecnológico
+
+| Tecnología | Versión | Propósito |
+|-----------|---------|----------|
+| **Streamlit** | 1.28+ | Framework web para interfaz |
+| **Plotly** | 5.17+ | Gráficos interactivos |
+| **Pandas** | 2.1+ | Análisis y procesamiento de datos |
+| **NumPy** | 1.24+ | Operaciones numéricas |
+| **Python** | 3.8+ | Lenguaje de programación |
+
+### Descripción de Tecnologías
+
+#### 🎨 **Streamlit**
+- Framework Python minimalista para crear aplicaciones web
+- Permite recargar código en tiempo real (hot reload)
+- Integración nativa con librerías de datos
+- Componentes predefinidos (sliders, selectboxes, métricas)
+- Rendimiento optimizado para dashboards y análisis
+- Aplicación web sin necesidad de HTML/CSS/JavaScript
+
+#### 📊 **Plotly**
+- Librería de visualización interactiva
+- Gráficos que responden a interacción del usuario
+- Exportación nativa a imágenes PNG
+- Mapas interactivos con Mapbox
+- Múltiples tipos de gráficos profesionales (barras, líneas, pastel, mapas)
+- Hover information personalizable
+
+#### 🐼 **Pandas**
+- Manipulación y transformación eficiente de datos
+- Lectura de archivos CSV/Excel
+- Filtrado, agrupación y pivotaje de datos
+- Cálculos estadísticos avanzados
+- Conversiones de tipos de datos
+- Manejo de fechas y series temporales
+
+#### 🔢 **NumPy**
+- Operaciones numéricas y matriciales
+- Análisis estadístico (media, mediana, desviación estándar)
+- Operaciones en arrays multidimensionales
+- Base para Pandas y Plotly
+
+### Arquitectura
+
+```
+┌─────────────────────┐
+│  Navegador Web      │
+└──────────┬──────────┘
+           │ HTTP
+           ↓
+┌─────────────────────┐
+│ Streamlit Server    │
+│  (Python)           │
+└──────────┬──────────┘
+           │
+    ┌──────┴──────┬────────────┬─────────────┐
+    ↓             ↓            ↓             ↓
+┌────────┐  ┌────────┐  ┌──────────┐  ┌───────┐
+│ Pandas │  │ Plotly │  │ NumPy    │  │ Cache │
+│(datos) │  │(gráf.) │  │(cálculos)│  │      │
+└────────┘  └────────┘  └──────────┘  └───────┘
+    │
+    ↓
+┌──────────────────────────┐
+│ Homicidios_2024_clean.csv│
+└──────────────────────────┘
+```
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+Homicidios_2024/
+│
+├── app.py                              # Aplicación principal
+├── README.md                           # Documentación (este archivo)
+├── requirements.txt                    # Dependencias Python
+│
+├── 03_output/
+│   └── Homicidios_2024_clean.csv      # Datos fuente (CSV)
+│
+└── docs/ (opcional)
+    ├── diccionario_datos.md            # Documentación de campos
+    └── guia_avanzada.md                # Guía para desarrolladores
+```
+
+### Descripción de Archivos
+
+- **app.py**: Código principal de la aplicación Streamlit
+- **README.md**: Documentación completa (este archivo)
+- **requirements.txt**: Lista de paquetes Python necesarios
+- **03_output/Homicidios_2024_clean.csv**: Dataset limpio en CSV
+
+---
+
+## 📊 Diccionario de Datos
+
+| Columna | Tipo | Descripción | Ejemplo |
+|---------|------|-------------|---------|
+| `nom_ent` | string | Nombre de la entidad federativa | "Jalisco" |
+| `nom_mun` | string | Nombre del municipio | "Guadalajara" |
+| `nom_loc` | string | Nombre de la localidad | "Centro" |
+| `fecha_nac` | date | Fecha de nacimiento de víctima | "1985-05-15" |
+| `edad_anos` | int | Edad en años cumplidos | 38 |
+| `edad_cat` | string | Categoría de edad | "30-39" |
+| `sexo_cat` | string | Género de la víctima | "Hombre", "Mujer" |
+| `causa_def_cat` | string | Causa del fallecimiento | "Arma de fuego", "Agresión" |
+| `lugar_ocur_cat` | string | Lugar de ocurrencia | "Vía pública", "Vivienda" |
+| `fecha_ocurr` | date | Fecha del homicidio | "2024-03-20" |
+| `lat_decimal` | float | Latitud en decimales | 20.6595 |
+| `lon_decimal` | float | Longitud en decimales | -103.2494 |
+| `area_ur` | string | Clasificación urbana/rural | "Urbano", "Rural" |
+
+---
+
+## 🔒 Consideraciones de Privacidad
+
+Esta aplicación trabaja con datos de dominio público:
+
+- ✅ Los datos ya están anonimizados
+- ✅ Se utiliza solo para análisis estadístico
+- ✅ No se almacenan datos adicionales
+- ✅ Las búsquedas son locales (no envían a servidores externos)
+- ✅ Cumple con estándares de protección de datos
+
+---
+
+## 🐛 Solución de Problemas
+
+### ❌ Error: "No se encontró el archivo CSV"
+
+**Causa**: El archivo de datos no está en la ruta correcta
+
+**Solución**:
+1. Verifica que `Homicidios_2024_clean.csv` existe
+2. Confirma la ruta: `03_output/Homicidios_2024_clean.csv`
+3. Revisa permisos de lectura del archivo
+4. No cambies la estructura de carpetas
+
+```bash
+# Estructura correcta:
+Homicidios_2024/
+├── 03_output/
+│   └── Homicidios_2024_clean.csv  ✅
+└── app.py
+```
+
+### ⏱️ La aplicación es lenta
+
+**Causa**: Demasiados datos o conexión lenta
+
+**Solución**:
+1. Reduce el rango de fechas en el filtro
+2. Limita municipios/entidades seleccionadas
+3. Cierra otras pestañas/aplicaciones
+4. Verifica conexión a internet (Mapbox requiere conexión)
+5. Reinicia la aplicación: `Ctrl+C` y `streamlit run app.py`
+
+### 📊 Gráficos no muestran datos
+
+**Causa**: Filtros muy restrictivos o datos vacíos
+
+**Solución**:
+1. Verifica que los filtros no excluyen todos los registros
+2. Limpia filtros: deja todas opciones en blanco
+3. Recarga la página: `F5` o `Ctrl+R`
+4. Revisa la tabla en "Búsqueda Avanzada" para confirmar datos
+
+### 🔴 Error: "ModuleNotFoundError: No module named 'streamlit'"
+
+**Causa**: Paquetes no instalados
+
+**Solución**:
+```bash
+# Instala las dependencias
+pip install -r requirements.txt
+
+# O instala manualmente
+pip install streamlit pandas plotly numpy
+```
+
+### 🗺️ El mapa no carga en "Análisis Geográfico"
+
+**Causa**: Conexión a internet o falta de coordenadas
+
+**Solución**:
+1. Verifica conexión a internet
+2. Filtra solo registros con coordenadas válidas
+3. Reinicia la aplicación
+4. Limpia caché del navegador
+
+---
+
+## 📞 Contacto y Soporte
+
+### Para reportar problemas:
+1. Revisa la documentación en la sección "ℹ️ Información"
+2. Verifica que tus filtros sean correctos
+3. Consulta el diccionario de datos en esta documentación
+
+### Consulta frecuentes:
+
+**P: ¿Puedo exportar todos los datos?**  
+R: Sí, usa "Búsqueda Avanzada" sin filtros y descarga como CSV
+
+**P: ¿Qué significa cada color en los gráficos?**  
+R: Los colores indican intensidad/cantidad. Revisa la leyenda en cada gráfico
+
+**P: ¿Los datos se actualizan automáticamente?**  
+R: No, debes reemplazar el CSV manualmente
+
+**P: ¿Funciona sin conexión a internet?**  
+R: Sí, excepto la sección "Análisis Geográfico" que usa mapas en línea
+
+---
+
+## 📄 Licencia
+
+Este proyecto utiliza herramientas open-source bajo licencias MIT y BSD.
+
+- **Streamlit**: Apache License 2.0
+- **Plotly**: MIT License
+- **Pandas**: BSD License
+- **NumPy**: BSD License
+
+---
+
+## ✍️ Información del Proyecto
+
+**Desarrollado con Streamlit**  
+Aplicación de análisis de datos de homicidios | 2024  
+Última actualización: 2024  
+Versión: 1.0
+
+---
+
+**¡Gracias por usar esta aplicación!**
