@@ -24,13 +24,23 @@ dest_dir <- here("01_datos_brutos")
 
 zip_path_def <- path(dest_dir, "defunciones_2024.zip")
 
+#Defunciones 2023----
+#Definimos rutas
+
+url_def  <- "https://www.inegi.org.mx/contenidos/programas/edr/microdatos/defunciones/2023/defunciones_base_datos_2023_dbf.zip"
+
+dest_dir <- here("01_datos_brutos")
+
+zip_path_def <- path(dest_dir, "defunciones_2023.zip")
+
 #Descargamos archivo
 
 download.file(url_def, zip_path_def, mode = "wb")
 
 #Extraemos ZIP
 
-unzip(zip_path_def, exdir = dest_dir)
+dir.create("01_datos_brutos/Defunciones_23")
+unzip(zip_path_def, exdir = "01_datos_brutos/Defunciones_23/")
 
 
 #Catálogo de claves----

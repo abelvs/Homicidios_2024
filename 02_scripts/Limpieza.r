@@ -24,7 +24,7 @@ defunciones_24 <- foreign::read.dbf("01_datos_brutos/DEFUN24.dbf", as.is = TRUE)
 
 
 #generamos catálogos completos de areas geoestadísticas
-ageem <- fread("01_datos_brutos/AGEEML_2025111494885.csv", encoding = "Latin-1") %>% 
+ageem <- fread("01_datos_brutos/AGEEML_20251114940908.csv", encoding = "Latin-1") %>% 
   clean_names() %>% 
   mutate(clave_localidad = str_pad(cvegeo, side = "left", pad = "0", width = 9),
          clave_municipio = substr(clave_localidad, 1,5),
@@ -186,5 +186,6 @@ homicidios_clean <- defunciones_24 %>%
 
 
 write.csv(homicidios_clean, "03_output/Homicidios_2024_clean.csv")
+
 
 
