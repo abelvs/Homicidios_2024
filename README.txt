@@ -7,7 +7,7 @@ Repositorio para el análisis de homicidios en México durante 2024. Incluye scr
 - `01_datos_brutos/` – Carpeta inicialmente vacía; se pobla al ejecutar `Obtener_datos_INEGI.r`.  
 - `02_scripts/` – Scripts de limpieza, transformación y análisis.  
 - `03_output/` – Gráficos, catálogos y tablas intermedias.  
-- `04_output/` – ppt y PDF con visualizaciones  y texto de análisis.  
+- `04_documentos/` – ppt y PDF con visualizaciones  y texto de análisis.  
 
 ## Uso
 
