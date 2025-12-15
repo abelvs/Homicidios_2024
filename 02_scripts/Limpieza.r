@@ -24,7 +24,7 @@ defunciones_24 <- foreign::read.dbf("01_datos_brutos/DEFUN24.dbf", as.is = TRUE)
 
 
 #generamos catálogos completos de areas geoestadísticas
-ageem <- fread("01_datos_brutos/AGEEML_20251114940908.csv", encoding = "Latin-1") %>% 
+ageem <- fread("01_datos_brutos/Catalogo_locs/AGEEML_20251114922785.csv", encoding = "Latin-1") %>% 
   clean_names() %>% 
   mutate(clave_localidad = str_pad(cvegeo, side = "left", pad = "0", width = 9),
          clave_municipio = substr(clave_localidad, 1,5),
@@ -35,11 +35,15 @@ localidades <- ageem %>%
 
 municipios <- ageem %>% 
   group_by(clave_municipio) %>% 
-  summarise(nom_mun = first(nom_mun))
+  mutate(pob_total = as.double(pob_total)) %>% 
+  summarise(nom_mun = first(nom_mun),
+            pob_mun = sum(pob_total, na.rm = T))
 
 entidades <- ageem %>% 
   group_by(clave_entidad) %>% 
-  summarise(nom_ent = first(nom_ent))
+  mutate(pob_total = as.double(pob_total)) %>% 
+  summarise(nom_ent = first(nom_ent),
+            pob_ent = sum(pob_total, na.rm = T))
 
 #Generamos listas de claves para clasificar causa de muerte
 
@@ -64,6 +68,13 @@ claves_fuerza_corporal <- catalogo_causas %>%
   as.character() %>% 
   unique()
 
+claves_no_especificado <- catalogo_causas %>% 
+  filter(str_detect(DESCRIP, 
+                    regex("AGRESION POR MEDIOS NO ESPECIFICADOS"))) %>% 
+  pull(CVE) %>% 
+  as.character() %>% 
+  unique()
+
 #Cargamos el catálogo de parentezco de la víctima y el presunto agresor
 
 catalogo_parentesco <- foreign::read.dbf("01_datos_brutos/PARENTESCO.dbf", as.is = T) %>% 
@@ -77,6 +88,9 @@ catalogo_parentesco <- foreign::read.dbf("01_datos_brutos/PARENTESCO.dbf", as.is
                                     T ~ NA_character_)) %>% 
   rename(par_agre = cve,
          par_agre_desc = descrip)
+
+catalogo_ocupaciones <- foreign::read.dbf("01_datos_brutos/OCUPACIONES.dbf") %>% 
+  clean_names()
   
 
 #Generamos el DF limpio
@@ -94,6 +108,8 @@ homicidios_clean <- defunciones_24 %>%
                                month = mes_nacim,
                                day = dia_nacim)) %>% 
   #Categorizamos las causas de defunción acorde al catálogo
+  left_join(catalogo_causas, by = c("causa_def" = "CVE")) %>% 
+  rename(causa_def_detalle = DESCRIP) %>% 
   mutate(causa_def_cat = case_when(causa_def %in% claves_arma_de_fuego ~ "Arma de Fuego",
                                    causa_def %in% claves_arma_blanca ~ "Arma Blanca",
                                    causa_def %in% claves_fuerza_corporal ~ "Fuerza Corporal",
@@ -105,7 +121,8 @@ homicidios_clean <- defunciones_24 %>%
                                          substr(edad, 1,1) == "3" ~ "meses",
                                          substr(edad, 1,1) == "4" ~ "años",
                                          T ~ NA_character_),
-         edad_anos = case_when(indicador_tipo_edad == "horas" ~ "0",
+         edad_anos = case_when(anio_nacim == 9999 ~ NA,
+                               indicador_tipo_edad == "horas" ~ "0",
                                indicador_tipo_edad == "dias" ~ "0",
                                indicador_tipo_edad == "meses" ~ "0",
                                indicador_tipo_edad == "años" ~ substr(edad, 3,4),
@@ -139,7 +156,8 @@ homicidios_clean <- defunciones_24 %>%
          clave_municipio = str_pad(paste0(ent_ocurr, mun_ocurr), side = "left", pad = "0", width = 5),
          clave_entidad = substr(clave_municipio, 1,2)) %>% 
   left_join(entidades, by = "clave_entidad") %>% 
-  left_join(municipios, by = "clave_municipio") %>% 
+  left_join((municipios %>% 
+               select(-pob_mun)), by = "clave_municipio") %>% 
   left_join(localidades, by = "clave_localidad") %>% 
   mutate(clave_localidad = ifelse(is.na(nom_loc), NA, clave_localidad),
          clave_municipio = ifelse(is.na(nom_mun), NA, clave_municipio),
@@ -170,6 +188,24 @@ homicidios_clean <- defunciones_24 %>%
                                     TRUE ~ NA_character_)) %>% 
   #Unimos los valores categorizados de parentezco del probable agresor
   left_join(catalogo_parentesco, by = "par_agre") %>% 
+  #Generamos variables de análisis para completitud de la información
+  mutate(comp_ent = ifelse(!is.na(clave_entidad), 1,0),
+         comp_mun = ifelse(!is.na(clave_municipio), 1,0),
+         comp_loc = ifelse(!is.na(clave_localidad), 1,0),
+         comp_causa_def = ifelse(!causa_def %in% claves_no_especificado, 1,0),
+         comp_sexo = ifelse(sexo_cat != "No especificado", 1,0),
+         comp_afromex = ifelse(afromex != "9", 1,0),
+         comp_conindig = ifelse(conindig != "9", 1,0),
+         comp_lengua = ifelse(lengua != "9", 1,0),
+         comp_edad = ifelse(!is.na(edad_anos), 1,0),
+         comp_cond_act = ifelse(cond_act != "9", 1,0),
+         comp_ocup = ifelse(ocupacion != "999", 1,0),
+         comp_escolaridad = ifelse(escolarida != 99, 1,0),
+         comp_edo_civil = ifelse(edo_civil != 9, 1,0),
+         comp_ocurr_trab = ifelse(ocurr_trab != 9, 1,0),
+         comp_lugar_ocur = ifelse(lugar_ocur != 9, 1,0),
+         comp_parentesco = ifelse(!par_agre_cat %in% c("No especificado", NA), 1,0),
+         comp_vio_fmai = ifelse(!vio_fami != 9, 1,0)) %>% 
   #Seleccionamos variables de interés
   select(#Geográficas
          clave_entidad, nom_ent, clave_municipio, nom_mun, clave_localidad, nom_loc,
@@ -180,12 +216,17 @@ homicidios_clean <- defunciones_24 %>%
          #Ocurrencia de los hechos
          anio_ocur, mes_ocurr, dia_ocurr, fecha_ocurr,
          #Características de los hechos
-         causa_def_cat, par_agre_cat, lugar_ocur_cat, 
+         causa_def_cat, causa_def_detalle, par_agre_cat, lugar_ocur_cat, 
          #Adicionales demográficas
-         area_ur, ambito, pob_total, lat_decimal, lon_decimal)
+         area_ur, ambito, pob_total, lat_decimal, lon_decimal,
+         #Completitud info
+         contains("comp_"))
+
 
 
 write.csv(homicidios_clean, "03_output/Homicidios_2024_clean.csv")
 
+write.csv(municipios, "03_output/Catalogo_municipios.csv")
+write.csv(entidades, "03_output/Catalogo_entidades.csv")
 
 
