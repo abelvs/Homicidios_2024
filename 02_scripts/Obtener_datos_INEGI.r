@@ -80,4 +80,11 @@ ent_sf <- sf_mun %>%
 dir_create("01_datos_brutos/Shp_ent")
 st_write(ent_sf, "01_datos_brutos/Shp_ent/sf_ent.shp")
 
+# Limpieza de archivos ZIP----
+file_delete(zip_path_def)
+file_delete(zip_path_ageeml)
+
+# Mensaje de confirmación
+cat("Archivos ZIP eliminados después de la extracción.\n")
+
 
